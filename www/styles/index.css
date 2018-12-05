@@ -1,0 +1,25 @@
+@import url("../framework7-2.2.1/icons/css/framework7-icons.css");
+.ui-icon-myicon:after {
+	background-image: url(../res/icn/login.png);
+}
+.demo-swiper {
+  height: 150px;
+}
+.size-30{
+    font-size: 30px;
+}
+.size-25{
+    font-size: 25px;
+}
+.size-20{
+    font-size: 20px;
+}
+.color-blue{
+    color: blue;
+}
+.card-footer{
+    text-align: center;
+}
+.color-grey{
+    color: #8e8e93;
+}

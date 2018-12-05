@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>RECIPEiT</title>
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/backendless.js"></script>
+        <script src="js/home.js"></script>
+        <script src="js/homepage.js"></script>
+        <!-- Path to Framework7 Library CSS -->
+        <link rel="stylesheet" href="framework7-2.2.1/dist/css/framework7.min.css">
+        <link rel="stylesheet" href="framework7-2.2.1/icons/css/framework7-icons.css">
+        <link rel="stylesheet" href="styles/index.css">
+    </head>
+    <body>
+        <!-- App root element -->
+        <div id="app">
+           
+            <!-- Your main view, should have "view-main" class -->
+            <div class="view view-main">
+               
+                <!-- Initial Page, "data-name" contains page name -->
+                <div id="outputCtn" data-name="home" class="page">
+                        <!-- Renders to: -->
+                        <div class="navbar">
+                            <div class="navbar-inner sliding">
+                                <div class="right">
+                                </div>
+                                <div class="title"><a href="#">RECIPEiT</a></div>
+                            </div>
+                        </div>
+
+                    <!-- Toolbar -->
+                    <div class="toolbar">
+                        <div class="toolbar-inner">
+                            <!-- Toolbar links -->
+                            <a href="#" id="dashboardbtn"><i class="f7-icons size-20">add_round</i></a>
+                            <a href="#" id="homebtn" class="link"><i class="f7-icons size-20">home</i></a>
+                            <a class="link popup-open" data-popup=".login-popup" href="#" class="link"><i class="f7-icons size-20">login</i></a>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    <!-- Scrollable page content -->
+                    <div id="main-ctn" class="page-content">
+                        
+                        <!--SEARCH-->
+                        <!-- Searchbar with auto init -->
+                        <form method="POST" id="searchBar" class="searchbar">
+                            <div class="searchbar-inner">
+                                <div class="searchbar-input-wrap">
+                                    <input name="searchItm" type="search" placeholder="Search">
+                                    <i class="searchbar-icon"></i>
+                                    <span class="input-clear-button"></span>
+                                </div>
+                                <span class="searchbar-disable-button">Cancel</span>
+                                <a id="search" class="link"><i class="f7-icons color-grey margin-left">check_round</i></a>
+                            </div>
+                        </form>
+                           
+                        <?php
+                            
+                        ?>
+                        
+                        <script>
+                            //creating the query object
+                           var dataQueryBuilder = Backendless.DataQueryBuilder.create();
+                            //group the results by created(attribute)
+                            dataQueryBuilder.setGroupBy( "created" );
+                            //gets the data from the meal table runs the method find passing the query object
+                            //then calls processResults method and errors to be sent in the error method
+                            //to be handled afterwards
+                            Backendless.Data.of( "meal" ).find(dataQueryBuilder).then(processResults).catch(error);
+                            
+                            
+                        /*METHOD
+                         - Responsible for:
+                            -handling the data sent by the ajax call;
+                         - Parameters:
+                            -meal -> which is the data from within the meal table (table name);
+                        */
+                        function  processResults(meal) {
+                            //reference the mainCtn div container
+                            var mainCtn = document.getElementById('main-ctn');
+                            //start a loop that goes as long as the number of elements within the meal array
+                            for (var i = 0; i < meal.length; i++) { 
+                            //write this in the html
+                            /*
+                            This html container is completed by embedding html in javascript.
+                            I have used this approach to be able concatenate the actual data from
+                            within the database with the right html sintax in order to display
+                            it properly on the screen.
+                            */
+                            mainCtn.innerHTML = "<div id='"+meal[i].objectId+"' class='card'>"+ 
+                                                    // TITLE
+                                                    "<div class='card-header item-title'>"+ meal[i].mealName +"</div>" +
+                                                    // IMAGE
+                                                    "<div class='swiper-container swiper-init demo-swiper'>"+
+                                                        "<div class='swiper-wrapper'>"+
+                                                            "<div class='swiper-slide lazy lazy-fade-in' data-background='"+ meal[i].img1URL +"'></div>"+
+                                                        "</div>"+
+                                                    "</div>"+
+                                                    // DESCRIPTION
+                                                    "<div class='card-content card-content-padding'>"+
+                                                        "<p>"+ meal[i].mealDescription +"</p>"+
+                                                    "</div>"+
+                                                    // LINK
+                                                    "<div class='card-footer'>"+//unique class name of the popup taking the id of the recipe
+                                                        "<a href='#' class='button col popup-open' data-popup='.recipe"+meal[i].objectId+"-popup'>See</a>"+
+                                                    "</div>"+
+                                                "</div>"+
+                                                
+                                                // POPUP
+                                                "<div class='popup recipe"+meal[i].objectId+"-popup'>"+
+                                                    "<div class='view'>"+
+                                                        "<div data-name='recipe"+meal[i].objectId+"-popup' class='page'>"+
+                                                            // NAVBAR
+                                                            "<div class='navbar'>"+
+                                                                "<div class='navbar-inner sliding'>"+
+                                                                    "<div class='right'>"+
+                                                                        "<f7-navbar title='RECIPEiT' back-link='Back'><a href='#' class='popup-close link'><i class='f7-icons size-30'>close</i></a></f7-navbar>"+
+                                                                    "</div>"+
+                                                                    // Title
+                                                                    "<div class='title'>"+meal[i].mealName+"</div>"+
+                                                                "</div>"+
+                                                            "</div>"+
+                                                            "<div class='page-content'>"+
+                                                                "<div class='block'>"+
+                                                                    // Directions
+                                                                    "<div class='block-title'><p>Directions of Cooking</p></div>"+
+                                                                    "<div class='block block-strong'>"+
+                                                                        "<p>"+ meal[i].mealDescription +"</p>"+
+                                                                    "</div>"+
+                                                                    // Ingredients
+                                                                    "<div class='block-title'><p>Ingredients</p></div>"+
+                                                                    "<div class='block block-strong'>"+
+                                                                        "<p>"+ meal[i].mealIngredients +"</p>"+
+                                                                    "</div>"+
+                                                                "</div>"+
+                                                            "</div>"+
+                                                        "</div>"+
+                                                    "</div>"+
+                                                "</div>"
+                                                ;
+                            }
+                        }   
+                            
+                            
+                        /*METHOD
+                         - Responsible for:
+                            -handling the error;
+                         - Parameters:
+                            -err -> which is the actual error passed by the backendless ajax call;
+                        */
+                        function error(err) {
+                            //display the error in the console
+                            console.log(err);
+                        }
+                        </script>
+                        
+                        <!-- RECIPE 1 Template -->
+                        <div class="card">
+                            <!-- Title -->
+                            <div class="card-header item-title">&nbsp;</div>
+                            <!-- Slider container -->
+                            <div class="swiper-container swiper-init demo-swiper">
+                                <!-- Slides wrapper -->
+                                <div class="swiper-wrapper">
+                                    <!-- Slides -->
+                                    <div class="swiper-slide lazy lazy-fade-in" data-background='res/screen/img3.jpg'></div>
+                                </div>
+                            </div>
+                           <!-- This section contains directions of how to prepare the recipe. It may or may not contain aspects such as time of preparation or extra seasoning.-->
+                            <!-- Short Description -->
+                            <div class="card-content card-content-padding" >
+                                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                            </div>
+                            <!-- Link to Popup -->
+                            <div class="card-footer">
+                                <a href="#" class="button col" data-popup=".recipe1-popup">See</a>
+                            </div>
+                        </div>
+                        <!-- RECIPE 2 Template -->
+                        <div class="card">
+                            <!-- Title -->
+                            <div class="card-header item-title">&nbsp;</div>
+                            <!-- Slider container -->
+                            <div class="swiper-container swiper-init demo-swiper">
+                                <!-- Slides wrapper -->
+                                <div class="swiper-wrapper">
+                                    <!-- Slides -->
+                                    <div class="swiper-slide lazy lazy-fade-in" data-background="res/screen/img3.jpg"></div>
+                                </div>
+                            </div>
+                           <!-- This section contains directions of how to prepare the recipe. It may or may not contain aspects such as time of preparation or extra seasoning.-->
+                            <!-- Short Description -->
+                            <div class="card-content card-content-padding" >
+                                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                            </div>
+                            <!-- Link to Popup -->
+                            <div class="card-footer">
+                                <a href="#" class="button col" data-popup=".recipe1-popup">See</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+
+<!---------------------------------------------------------------------------------------------LOGIN-->
+<!-- Scrollable page content -->
+                    <div class="page-content">
+                        <div class="popup login-popup">
+                            <div class="view">
+                            <!-- Initial Page, "data-name" contains page name -->
+                                <div data-name="login-popup" class="page">
+                                    <!--POPUP Navbar-->
+                                    <div class="navbar">
+                                        <div class="navbar-inner sliding">
+                                            <div class="right">
+                                                <f7-navbar title="RECIPEiT" back-link="Back">
+                                                    <a href="#" class="popup-close link"><i class="f7-icons size-30">close</i></a>
+                                                </f7-navbar>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--LOGIN Content-->
+                                    <div class="page-content">
+                                        <div class="page-content login-screen-content">
+                                            <div class="login-screen-title">Log In</div>
+                                            <form id="loginForm" action="index.php" method="POST">
+                                                <div class="list">
+                                                    <ul>
+                                                        <li class="item-content item-input">
+                                                            <div class="item-inner">
+                                                                <div class="item-title item-label">Username</div>
+                                                                <div class="item-input-wrap">
+                                                                    <input type="text" name="username" placeholder="Your username">
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="item-content item-input">
+                                                            <div class="item-inner">
+                                                                <div class="item-title item-label">Password</div>
+                                                                <div class="item-input-wrap">
+                                                                    <input type="password" name="password" placeholder="Your password">
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="list">
+                                                    <ul>
+                                                        <li>
+                                                        <a href="#" id="login" class="item-link list-button">Sign In</a>
+                                                        </li>
+                                                    </ul>
+                                                    <div class="block-footer">
+                                                        <p>Log into the app to be able to add new Recipes.</p>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        
+                </div>
+<!---------------------------------------------------------------------------------------------LOGIN-->
+
+                    
+                    
+                </div>
+                
+            </div>
+            
+            
+            
+            
+        </div>    
+            
+        
+        
+        
+    <!-- Path to Framework7 Library JS-->
+    <script type="text/javascript" src="framework7-2.2.1/dist/js/framework7.min.js"></script>
+    <!-- Path to jQuery-->
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <!-- Path to index.js-->
+    <script type="text/javascript" src="js/index.js"></script>
+  </body>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+</html>

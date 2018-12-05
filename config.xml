@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- config.xml reference: https://build.phonegap.com/docs/config-xml -->
+<widget xmlns     = "http://www.w3.org/ns/widgets"
+        xmlns:gap = "http://phonegap.com/ns/1.0"
+        id        = "mob.app.dev.lifecycle"
+        version   = "1.0.0">
+
+    <name>RECIPEiT</name>
+
+    <description>
+        A mobile application of recipes.
+    </description>
+
+    <author href="http://source.worcestercomputing.com" email="oani1_16@uni.worc.ac.uk">
+        Iulian Oana
+    </author>
+
+    <!--<preference name="phonegap-version" value="cli-7.0.1" />-->
+	
+    <preference name="permissions"  value="none"/>   
+    
+    <platform name="ios">
+    </platform>
+    <preference name="android-minSdkVersion" value="14" />
+    <platform name="android">
+    <allow-intent href="market:*" />
+    </platform>
+	
+	
+	<access origin="*"/>
+   	<plugin name="cordova-plugin-whitelist" version="1" />
+   	<plugin name="cordova-plugin-camera" version="2" />
+   	<plugin name="cordova-plugin-file-transfer" />
+   	<plugin name="cordova-plugin-media-capture" spec="~3.0.2" />
+</widget>
